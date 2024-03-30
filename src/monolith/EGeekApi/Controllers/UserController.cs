@@ -1,5 +1,4 @@
 using EGeekapp.Users;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EGeekapi.Controllers; 
@@ -17,15 +16,8 @@ public class UserController : ControllerBase
     [HttpPost] 
     public async Task<IActionResult> Create([FromBody] UserRequest userRequest)
     {
-        try
-        {
-            var userResponse = await _userService.Create(userRequest);
-            return Ok(userResponse);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message); 
-        }
+        var userResponse = await _userService.Create(userRequest);
+        return Ok(userResponse);
     }
     
     [HttpPut]
@@ -60,5 +52,12 @@ public class UserController : ControllerBase
     {
         var users = await _userService.GetAll();
         return Ok(users);
+    }
+    
+    [HttpPatch("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest changePasswordRequest)
+    {
+        await _userService.ChangePassword(changePasswordRequest);
+        return Ok();
     }
 }

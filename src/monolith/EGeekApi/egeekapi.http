@@ -1,13 +1,27 @@
 @ApiAddress = http://localhost:5192
+@UserID = df9c540c-ddbd-47f6-8ab7-d8a8c9e5bad4
+
+###
+
+POST {{ApiAddress}}/v1/token
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "salmeidabatista@gmail.com",
+  "password": "Test@123"
+}
+
+###
 
 POST {{ApiAddress}}/v1/users/
 Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "test",
-  "email": "salmeidabatista@gmail.com",
-  "password": "Test@123"
+  "name": "test w",
+  "email": "test1@gmail.com",
+  "password": "test@123"
 }
 
 ###
@@ -17,5 +31,17 @@ Accept: application/json
 
 ###
 
-GET {{ApiAddress}}/v1/users/df9c540c-ddbd-47f6-8ab7-d8a8c9e5bad4
+GET {{ApiAddress}}/v1/users/{{UserID}}
 Accept: application/json
+
+###
+
+PATCH {{ApiAddress}}/v1/users/change-password
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "salmeidabatista@gmail.com",
+  "currentPassword": "Test@123",
+  "newPassword": "Test@124"
+}

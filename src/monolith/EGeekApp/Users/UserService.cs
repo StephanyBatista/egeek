@@ -16,7 +16,7 @@ public class UserService
     {
         if (string.IsNullOrEmpty(userRequest.Name) || string.IsNullOrEmpty(userRequest.Email) || string.IsNullOrEmpty(userRequest.Password))
         {
-            throw new Exception("Name, Email and Password are required fields");
+            throw new ArgumentException("Name, Email and Password are required fields");
         }
         
         var user = new User
@@ -72,7 +72,7 @@ public class UserService
     {
         if (string.IsNullOrEmpty(userRequest.Name) || string.IsNullOrEmpty(userRequest.Email))
         {
-            throw new Exception("Name and Email are required fields");
+            throw new ArgumentException("Name and Email are required fields");
         }
         var user = await _userManager.FindByEmailAsync(userRequest.Email);
 
@@ -100,7 +100,7 @@ public class UserService
     {
         if (string.IsNullOrEmpty(changePasswordRequest.Email) || string.IsNullOrEmpty(changePasswordRequest.CurrentPassword) || string.IsNullOrEmpty(changePasswordRequest.NewPassword))
         {
-            throw new Exception("Email, Current Password and New Password are required fields");
+            throw new ArgumentException("Email, Current Password and New Password are required fields");
         }
         
         var user = await _userManager.FindByEmailAsync(changePasswordRequest.Email);
@@ -113,6 +113,18 @@ public class UserService
             {
                 return true;
             }
+        }
+
+        return false;
+    }
+    
+    public async Task<bool> Authenticate(AuthenticateRequest authenticateRequest)
+    {
+        var user = await _userManager.FindByEmailAsync(authenticateRequest.Email);
+
+        if (user != null && await _userManager.CheckPasswordAsync(user, authenticateRequest.Password))
+        {
+            return true;
         }
 
         return false;
