@@ -1,18 +1,22 @@
 @ApiAddress = http://localhost:5192
 @UserID = df9c540c-ddbd-47f6-8ab7-d8a8c9e5bad4
 
+
 ###
 
+# @token_endpoint
 POST {{ApiAddress}}/v1/token
 Accept: application/json
 Content-Type: application/json
 
 {
   "email": "salmeidabatista@gmail.com",
-  "password": "Test@123"
+  "password": "Test@124"
 }
 
 ###
+
+@Token = {{token_endpoint.response.body.token}}
 
 POST {{ApiAddress}}/v1/users/
 Accept: application/json
@@ -26,8 +30,10 @@ Content-Type: application/json
 
 ###
 
-GET {{ApiAddress}}/v1/users/
+
+GET {{ApiAddress}}/v1/users/me
 Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYWxtZWlkYWJhdGlzdGFAZ21haWwuY29tIiwianRpIjoiYWY4ZWJiY2QtYzc3My00ODFhLWFlYzctMTIzYjMxZjMyOGJjIiwiZXhwIjoxNzExODM5MDkzLCJpc3MiOiJlR2Vla2UiLCJhdWQiOiJlR2Vla2UifQ.cRUeEccogKLPvW9foCpUnEEDunUWb7wZf5FCmU76VEY
 
 ###
 

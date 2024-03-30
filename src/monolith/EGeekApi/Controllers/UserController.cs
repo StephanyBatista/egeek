@@ -1,8 +1,11 @@
+using System.Security.Claims;
 using EGeekapp.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EGeekapi.Controllers; 
 
+[Authorize]
 [Route("v1/users")]
 public class UserController : ControllerBase
 {
@@ -13,10 +16,24 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    [AllowAnonymous]
     [HttpPost] 
     public async Task<IActionResult> Create([FromBody] UserRequest userRequest)
     {
         var userResponse = await _userService.Create(userRequest);
+        return Ok(userResponse);
+    }
+    
+    [HttpGet("me")]
+    public async Task<IActionResult> GetById()
+    {
+        //get the user through the token and set the user response
+        var userResponse = new UserResponse
+        {
+            Email = User.FindFirstValue(ClaimTypes.Email),
+            Name = User.FindFirstValue(ClaimTypes.Name),
+        };
+
         return Ok(userResponse);
     }
     

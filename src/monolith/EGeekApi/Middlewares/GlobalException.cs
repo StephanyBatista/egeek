@@ -32,6 +32,7 @@ internal sealed class GlobalException : IExceptionHandler
         {
             problemDetails.Status = StatusCodes.Status500InternalServerError;
             problemDetails.Title = "Server error";
+            problemDetails.Detail = exception.Message;
         }
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using EGeekapp.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
@@ -20,6 +21,7 @@ public class TokenController : ControllerBase
         _configuration = configuration;
     }
     
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> GenerateToken([FromBody] AuthenticateRequest request)
     {
