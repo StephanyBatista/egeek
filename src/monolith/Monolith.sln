@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EGeekApi", "EGeekApi\EGeekApi.csproj", "{7DC02DD7-3B0E-4811-95BD-444317861947}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EGeekDomain", "EGeekDomain\EGeekDomain.csproj", "{E69CC7A4-001F-4CDB-A78D-8C53D2DABD6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EGeekInfra", "EGeekInfra\EGeekInfra.csproj", "{55E9FE70-C8AC-48A7-B3C1-6A96A88F101E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EGeekApp", "EGeekApp\EGeekApp.csproj", "{FBBA42DC-8EF0-4154-9527-BDB1D19250CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DC02DD7-3B0E-4811-95BD-444317861947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DC02DD7-3B0E-4811-95BD-444317861947}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DC02DD7-3B0E-4811-95BD-444317861947}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DC02DD7-3B0E-4811-95BD-444317861947}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E69CC7A4-001F-4CDB-A78D-8C53D2DABD6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E69CC7A4-001F-4CDB-A78D-8C53D2DABD6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E69CC7A4-001F-4CDB-A78D-8C53D2DABD6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E69CC7A4-001F-4CDB-A78D-8C53D2DABD6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55E9FE70-C8AC-48A7-B3C1-6A96A88F101E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55E9FE70-C8AC-48A7-B3C1-6A96A88F101E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55E9FE70-C8AC-48A7-B3C1-6A96A88F101E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55E9FE70-C8AC-48A7-B3C1-6A96A88F101E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBBA42DC-8EF0-4154-9527-BDB1D19250CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBBA42DC-8EF0-4154-9527-BDB1D19250CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBBA42DC-8EF0-4154-9527-BDB1D19250CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBBA42DC-8EF0-4154-9527-BDB1D19250CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

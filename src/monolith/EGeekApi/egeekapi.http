@@ -1,0 +1,21 @@
+@ApiAddress = http://localhost:5192
+
+POST {{ApiAddress}}/v1/users/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "test",
+  "email": "salmeidabatista@gmail.com",
+  "password": "Test@123"
+}
+
+###
+
+GET {{ApiAddress}}/v1/users/
+Accept: application/json
+
+###
+
+GET {{ApiAddress}}/v1/users/df9c540c-ddbd-47f6-8ab7-d8a8c9e5bad4
+Accept: application/json
