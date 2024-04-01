@@ -24,51 +24,19 @@ public class UserController : ControllerBase
         return Ok(userResponse);
     }
     
-    [HttpGet("me")]
-    public async Task<IActionResult> GetById()
+    [HttpPost("worker")] 
+    public async Task<IActionResult> CreateWorker([FromBody] UserRequest userRequest)
     {
-        //get the user through the token and set the user response
-        var userResponse = new UserResponse
-        {
-            Email = User.FindFirstValue(ClaimTypes.Email),
-            Name = User.FindFirstValue(ClaimTypes.Name),
-        };
-
+        var userResponse = await _userService.Create(userRequest, User.Identity.Name);
         return Ok(userResponse);
     }
     
-    [HttpPut]
-    public async Task<IActionResult> Update(UserRequest userRequest)
+    [HttpGet("me")]
+    public async Task<IActionResult> Me()
     {
-        try
-        {
-            var userResponse = await _userService.Update(userRequest);
-            return Ok(userResponse);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-    
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(string id)
-    {
-        var userResponse = await _userService.GetById(id);
-    
-        if (userResponse != null)
-        {
-            return Ok(userResponse);
-        }
-    
-        return NotFound();
-    }
-    
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var users = await _userService.GetAll();
-        return Ok(users);
+        var userResponse = await _userService.GetBy(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+        
+        return Ok(userResponse);
     }
     
     [HttpPatch("change-password")]

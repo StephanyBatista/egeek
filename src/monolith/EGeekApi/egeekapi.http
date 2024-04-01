@@ -1,11 +1,8 @@
-@ApiAddress = http://localhost:5192
-@UserID = df9c540c-ddbd-47f6-8ab7-d8a8c9e5bad4
-
+@api_url = http://localhost:5192
 
 ###
 
-# @token_endpoint
-POST {{ApiAddress}}/v1/token
+POST {{api_url}}/v1/token
 Accept: application/json
 Content-Type: application/json
 
@@ -14,11 +11,15 @@ Content-Type: application/json
   "password": "Test@124"
 }
 
+> {%
+    console.log("token: " + response.body.token);
+    client.global.set("auth_token", response.body.token);
+  
+%}
+
 ###
 
-@Token = {{token_endpoint.response.body.token}}
-
-POST {{ApiAddress}}/v1/users/
+POST {{api_url}}/v1/users/
 Accept: application/json
 Content-Type: application/json
 
@@ -30,19 +31,27 @@ Content-Type: application/json
 
 ###
 
-
-GET {{ApiAddress}}/v1/users/me
+POST {{api_url}}/v1/users/worker
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYWxtZWlkYWJhdGlzdGFAZ21haWwuY29tIiwianRpIjoiYWY4ZWJiY2QtYzc3My00ODFhLWFlYzctMTIzYjMxZjMyOGJjIiwiZXhwIjoxNzExODM5MDkzLCJpc3MiOiJlR2Vla2UiLCJhdWQiOiJlR2Vla2UifQ.cRUeEccogKLPvW9foCpUnEEDunUWb7wZf5FCmU76VEY
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "test 123",
+  "email": "test1@worker.com",
+  "password": "test@123"
+}
 
 ###
 
-GET {{ApiAddress}}/v1/users/{{UserID}}
+
+GET {{api_url}}/v1/users/me
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
 ###
 
-PATCH {{ApiAddress}}/v1/users/change-password
+PATCH {{api_url}}/v1/users/change-password
 Accept: application/json
 Content-Type: application/json
 
