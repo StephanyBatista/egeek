@@ -18,4 +18,9 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\EGeekDomain\EGeekDomain.csproj" />
+      <ProjectReference Include="..\EGeekInfra\EGeekInfra.csproj" />
+    </ItemGroup>
+
 </Project>

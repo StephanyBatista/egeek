@@ -1,5 +1,4 @@
-using EGeekapp.Users;
-using EGeekdomain;
+using EGeekDomain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +11,9 @@ public class ApplicationDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Product> Products { get; set; }
+    public DbSet<Lot> Lots { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> Items { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,11 @@ public class ApplicationDbContext : IdentityDbContext<User>
         {
             entity.Property(e => e.Name).HasMaxLength(120);
             entity.Property(e => e.Description).HasMaxLength(500);
+        });
+        
+        modelBuilder.Entity<Lot>(entity =>
+        {
+            entity.Property(e => e.Number).HasMaxLength(6);
         });
 
         modelBuilder.Entity<Order>(entity =>

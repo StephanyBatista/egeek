@@ -1,7 +1,10 @@
 using System.Security.Claims;
+using EGeekApp.Request;
+using EGeekApp.Response;
+using EGeekDomain;
 using Microsoft.AspNetCore.Identity;
 
-namespace EGeekapp.Users;
+namespace EGeekApp.Service;
 
 public class UserService
 {

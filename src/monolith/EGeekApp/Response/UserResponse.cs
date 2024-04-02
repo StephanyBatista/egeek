@@ -1,4 +1,4 @@
-namespace EGeekapp.Users;
+namespace EGeekApp.Response;
 
 public class UserResponse
 {

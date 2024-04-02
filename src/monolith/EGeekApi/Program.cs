@@ -1,7 +1,8 @@
 
 using System.Text;
 using EGeekApi.Middlewares;
-using EGeekapp.Users;
+using EGeekApp.Service;
+using EGeekDomain;
 using EGeekinfra.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

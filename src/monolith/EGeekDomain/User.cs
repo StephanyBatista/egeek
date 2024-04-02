@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace EGeekapp.Users;
+namespace EGeekDomain;
 
 public class User : IdentityUser
 {

@@ -1,4 +1,4 @@
-namespace EGeekapp.Users;
+namespace EGeekApp.Request;
 
 public class UserRequest
 {
