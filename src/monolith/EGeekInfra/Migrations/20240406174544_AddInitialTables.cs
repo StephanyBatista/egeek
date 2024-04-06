@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EGeekInfra.Migrations
 {
     /// <inheritdoc />
-    public partial class AddTablesInitial : Migration
+    public partial class AddInitialTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -158,7 +158,7 @@ namespace EGeekInfra.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Order",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -167,24 +167,26 @@ namespace EGeekInfra.Migrations
                     Address = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     CreditCardMasked = table.Column<string>(type: "character varying(16)", maxLength: 16, nullable: false),
                     TotalAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    CreatedById = table.Column<string>(type: "text", nullable: true),
+                    CreatedById = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedById = table.Column<string>(type: "text", nullable: true),
+                    UpdatedById = table.Column<string>(type: "text", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.PrimaryKey("PK_Order", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_CreatedById",
+                        name: "FK_Order_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_AspNetUsers_UpdatedById",
+                        name: "FK_Order_AspNetUsers_UpdatedById",
                         column: x => x.UpdatedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -195,12 +197,11 @@ namespace EGeekInfra.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    Stock = table.Column<int>(type: "integer", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedById = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedById = table.Column<string>(type: "text", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    OrderId = table.Column<int>(type: "integer", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -215,11 +216,54 @@ namespace EGeekInfra.Migrations
                         column: x => x.UpdatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ProductId = table.Column<int>(type: "integer", nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    OrderId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Orders_OrderId",
+                        name: "FK_OrderItem_Order_OrderId",
                         column: x => x.OrderId,
-                        principalTable: "Orders",
+                        principalTable: "Order",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_OrderItem_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stocks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    Color = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
+                    ProductId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Stocks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Stocks_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -260,14 +304,24 @@ namespace EGeekInfra.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CreatedById",
-                table: "Orders",
+                name: "IX_Order_CreatedById",
+                table: "Order",
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_UpdatedById",
-                table: "Orders",
+                name: "IX_Order_UpdatedById",
+                table: "Order",
                 column: "UpdatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItem_OrderId",
+                table: "OrderItem",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItem_ProductId",
+                table: "OrderItem",
+                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CreatedById",
@@ -275,14 +329,14 @@ namespace EGeekInfra.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_OrderId",
-                table: "Products",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_UpdatedById",
                 table: "Products",
                 column: "UpdatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Stocks_ProductId",
+                table: "Stocks",
+                column: "ProductId");
         }
 
         /// <inheritdoc />
@@ -304,13 +358,19 @@ namespace EGeekInfra.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "OrderItem");
+
+            migrationBuilder.DropTable(
+                name: "Stocks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "Order");
+
+            migrationBuilder.DropTable(
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

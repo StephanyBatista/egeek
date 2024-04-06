@@ -11,9 +11,9 @@ public class ApplicationDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Product> Products { get; set; }
-    public DbSet<Lot> Lots { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderItem> Items { get; set; }
+    public DbSet<Stock> Stocks { get; set; }
+    // public DbSet<Order> Orders { get; set; }
+    // public DbSet<OrderItem> Items { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,9 +25,9 @@ public class ApplicationDbContext : IdentityDbContext<User>
             entity.Property(e => e.Description).HasMaxLength(500);
         });
         
-        modelBuilder.Entity<Lot>(entity =>
+        modelBuilder.Entity<Stock>(entity =>
         {
-            entity.Property(e => e.Number).HasMaxLength(6);
+            entity.Property(e => e.Color).HasMaxLength(12);
         });
 
         modelBuilder.Entity<Order>(entity =>
