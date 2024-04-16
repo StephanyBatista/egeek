@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EGeekInfra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240406174544_AddInitialTables")]
-    partial class AddInitialTables
+    [Migration("20240416011323_InitialTables")]
+    partial class InitialTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,6 @@ namespace EGeekInfra.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -42,25 +41,31 @@ namespace EGeekInfra.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("CreatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("CreditCardMasked")
-                        .IsRequired()
                         .HasMaxLength(16)
                         .HasColumnType("character varying(16)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("numeric");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UpdatedById")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -69,7 +74,7 @@ namespace EGeekInfra.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("EGeekDomain.OrderItem", b =>
@@ -98,7 +103,7 @@ namespace EGeekInfra.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("EGeekDomain.Product", b =>
@@ -151,16 +156,16 @@ namespace EGeekInfra.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("character varying(12)");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
 
                     b.HasKey("Id");
 
@@ -369,15 +374,11 @@ namespace EGeekInfra.Migrations
                 {
                     b.HasOne("EGeekDomain.User", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
                     b.HasOne("EGeekDomain.User", "UpdatedBy")
                         .WithMany()
-                        .HasForeignKey("UpdatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
 
@@ -387,7 +388,7 @@ namespace EGeekInfra.Migrations
             modelBuilder.Entity("EGeekDomain.OrderItem", b =>
                 {
                     b.HasOne("EGeekDomain.Order", null)
-                        .WithMany("tems")
+                        .WithMany("Items")
                         .HasForeignKey("OrderId");
 
                     b.HasOne("EGeekDomain.Product", "Product")
@@ -478,7 +479,7 @@ namespace EGeekInfra.Migrations
 
             modelBuilder.Entity("EGeekDomain.Order", b =>
                 {
-                    b.Navigation("tems");
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
