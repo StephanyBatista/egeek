@@ -173,7 +173,9 @@ namespace EGeekInfra.Migrations
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     TransactionId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TransactionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    TransactionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ShippingStatus = table.Column<int>(type: "integer", nullable: false),
+                    ShippingDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -199,6 +201,10 @@ namespace EGeekInfra.Migrations
                     Name = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    QuantityInStock = table.Column<int>(type: "integer", nullable: false),
+                    WeightInGrams = table.Column<int>(type: "integer", nullable: false),
+                    HeightInCentimeters = table.Column<int>(type: "integer", nullable: false),
+                    WidthInCentimeters = table.Column<int>(type: "integer", nullable: false),
                     CreatedById = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedById = table.Column<string>(type: "text", nullable: true),
@@ -240,27 +246,6 @@ namespace EGeekInfra.Migrations
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_OrderItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Stocks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    Version = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
-                    ProductId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Stocks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Stocks_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -333,11 +318,6 @@ namespace EGeekInfra.Migrations
                 name: "IX_Products_UpdatedById",
                 table: "Products",
                 column: "UpdatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Stocks_ProductId",
-                table: "Stocks",
-                column: "ProductId");
         }
 
         /// <inheritdoc />
@@ -360,9 +340,6 @@ namespace EGeekInfra.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
-
-            migrationBuilder.DropTable(
-                name: "Stocks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

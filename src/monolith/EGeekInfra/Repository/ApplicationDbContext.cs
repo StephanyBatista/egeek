@@ -11,7 +11,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
     }
 
     public DbSet<Product> Products { get; set; }
-    public DbSet<Stock> Stocks { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     
@@ -25,11 +24,6 @@ public class ApplicationDbContext : IdentityDbContext<User>
             entity.Property(e => e.Description).HasMaxLength(500);
         });
         
-        modelBuilder.Entity<Stock>(entity =>
-        {
-            entity.Property(e => e.Version).HasMaxLength(12);
-        });
-
         modelBuilder.Entity<Order>(entity =>
         {
             entity.Property(e => e.Address).HasMaxLength(500);
