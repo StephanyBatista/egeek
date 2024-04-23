@@ -15,101 +15,69 @@ public class UserService
         _userManager = userManager;
     }
 
-    public async Task<UserResponse> Create(UserRequest userRequest, string creatorEmail = null)
+    public async Task<string> Create(UserRequest request)
     {
-        if (string.IsNullOrEmpty(userRequest.Name) || string.IsNullOrEmpty(userRequest.Email) || string.IsNullOrEmpty(userRequest.Password))
-        {
-            throw new ArgumentException("Name, Email and Password are required fields");
-        }
+        if (string.IsNullOrEmpty(request.Name)) throw new ArgumentException("Name is required"); 
+        if (string.IsNullOrEmpty(request.Email)) throw new ArgumentException("Email is required"); 
+        if (string.IsNullOrEmpty(request.Password)) throw new ArgumentException("Password is required");
 
         var user = new User
         {
-            UserName = userRequest.Name,
-            Email = userRequest.Email
+            Email = request.Email,
+            UserName = request.Email
         };
         
-        if(!string.IsNullOrEmpty(creatorEmail))
-        {
-            var creator = await _userManager.FindByEmailAsync(creatorEmail);
-            if (creator == null)
-            {
-                throw new ArgumentException("Creator email is not valid");
-            }
+        var result = await _userManager.CreateAsync(user, request.Password);
 
-            var creatorClaims = await _userManager.GetClaimsAsync(creator);
-            if (!creatorClaims.Any(c => c.Type == "Worker" && c.Value == "True"))
-            {
-                throw new ArgumentException("Creator does not have the Worker claim");
-            }
-        }
+        if (!result.Succeeded) throw new Exception(result.Errors.First().Description);
+        
+        var roleClaim = new Claim(ClaimTypes.Role, request.Role == "worker" ? "worker": "public");
+        var emailClaim = new Claim(ClaimTypes.Email, request.Email);
+        var nameClaim = new Claim(ClaimTypes.Name, request.Name);
+        
+        await _userManager.AddClaimsAsync(user, [roleClaim, emailClaim, nameClaim]);
 
-        var result = await _userManager.CreateAsync(user, userRequest.Password);
-
-        if (result.Succeeded)
-        {
-            if (!string.IsNullOrEmpty(creatorEmail)){
-                var claim = new Claim("Worker", "True");
-                await _userManager.AddClaimAsync(user, claim);
-            }
-
-            return new UserResponse
-            {
-                Name = userRequest.Name,
-                Email = userRequest.Email
-            };
-        }
-
-        throw new Exception(result.Errors.First().Description);
+        return user.Id;
     }
     
     public async Task<UserResponse> GetBy(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
+        if(user == null) throw new ArgumentException("User not found");
+        var claims = await _userManager.GetClaimsAsync(user);
 
-        if (user != null)
+        return new UserResponse
         {
-            return new UserResponse
-            {
-                Id = user.Id,
-                Name = user.UserName,
-                Email = user.Email
-            };
-        }
-
-        return null;
+            Id = user.Id,
+            Name = claims.First(c => c.Type == ClaimTypes.Name).Value,
+            Email = user.Email
+        };
     }
     
-    public async Task<bool> ChangePassword(ChangePasswordRequest changePasswordRequest)
+    public async Task<bool> ChangePassword(ChangePasswordRequest request)
     {
-        if (string.IsNullOrEmpty(changePasswordRequest.Email) || string.IsNullOrEmpty(changePasswordRequest.CurrentPassword) || string.IsNullOrEmpty(changePasswordRequest.NewPassword))
-        {
-            throw new ArgumentException("Email, Current Password and New Password are required fields");
-        }
+        if (string.IsNullOrEmpty(request.Email)) throw new ArgumentException("Email is required"); 
+        if (string.IsNullOrEmpty(request.CurrentPassword)) throw new ArgumentException("CurrentPassword is required");
+        if (string.IsNullOrEmpty(request.NewPassword)) throw new ArgumentException("NewPassword is required");
         
-        var user = await _userManager.FindByEmailAsync(changePasswordRequest.Email);
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if(user == null) throw new ArgumentException("User not found");
 
-        if (user != null)
-        {
-            var result = await _userManager.ChangePasswordAsync(user, changePasswordRequest.CurrentPassword, changePasswordRequest.NewPassword);
+        var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
-            if (result.Succeeded)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return result.Succeeded;
     }
     
-    public async Task<bool> Authenticate(AuthenticateRequest authenticateRequest)
+    public async Task<(User, IList<Claim>)> Authenticate(AuthenticateRequest request)
     {
-        var user = await _userManager.FindByEmailAsync(authenticateRequest.Email);
+        var user = await _userManager.FindByEmailAsync(request.Email);
 
-        if (user != null && await _userManager.CheckPasswordAsync(user, authenticateRequest.Password))
+        if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            return true;
+            var claims = await _userManager.GetClaimsAsync(user);
+            return (user, claims);
         }
 
-        return false;
+        return (null, null);
     }
 }

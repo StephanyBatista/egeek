@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using EGeekApp.Helper;
 using EGeekApp.Request;
 using EGeekApp.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -20,31 +21,21 @@ public class ProductController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ProductRequest productRequest)
     {
-        if(User.Claims.Any(c => c.Type == "Worker" && c.Value == "True"))
-            return Unauthorized();
-        
-        var creatorEmail = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-        await _productService.Create(productRequest, creatorEmail);
-        return Ok();
+        var id = await _productService.Create(productRequest, UserHelper.GetEmail(User.Claims));
+        return Ok(id);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] ProductRequest productRequest)
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ProductRequest productRequest)
     {
-        if(User.Claims.Any(c => c.Type == "Worker" && c.Value == "True"))
-            return Unauthorized();
-
-        var updaterEmail = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-        await _productService.Update(productRequest, updaterEmail);
+        await _productService.Update(id, productRequest, UserHelper.GetEmail(User.Claims));
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        if(User.Claims.Any(c => c.Type == "Worker" && c.Value == "True"))
-            return Unauthorized();
-        
         var products = await _productService.GetAll();
         return Ok(products);
     }

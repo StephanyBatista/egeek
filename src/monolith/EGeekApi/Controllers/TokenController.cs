@@ -26,21 +26,17 @@ public class TokenController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> GenerateToken([FromBody] AuthenticateRequest request)
     {
-        if(!await _userService.Authenticate(request))
+        var (user, claimsFromUser) = await _userService.Authenticate(request);
+        
+        if(user == null)
             return Unauthorized();
-
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, request.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
             _configuration["Jwt:Issuer"],
-            claims,
+            claimsFromUser,
             expires: DateTime.Now.AddMinutes(30),
             signingCredentials: creds);
 

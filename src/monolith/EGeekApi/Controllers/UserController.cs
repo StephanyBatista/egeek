@@ -1,4 +1,4 @@
-using System.Security.Claims;
+using EGeekApp.Helper;
 using EGeekApp.Request;
 using EGeekApp.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -19,31 +19,24 @@ public class UserController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost] 
-    public async Task<IActionResult> Create([FromBody] UserRequest userRequest)
+    public async Task<IActionResult> Create([FromBody] UserRequest request)
     {
-        var userResponse = await _userService.Create(userRequest);
-        return Ok(userResponse);
-    }
-    
-    [HttpPost("worker")] 
-    public async Task<IActionResult> CreateWorker([FromBody] UserRequest userRequest)
-    {
-        var userResponse = await _userService.Create(userRequest, User.Identity.Name);
+        var userResponse = await _userService.Create(request);
         return Ok(userResponse);
     }
     
     [HttpGet("me")]
     public async Task<IActionResult> Me()
     {
-        var userResponse = await _userService.GetBy(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+        var userResponse = await _userService.GetBy(UserHelper.GetEmail(User.Claims));
         
         return Ok(userResponse);
     }
     
     [HttpPatch("change-password")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest changePasswordRequest)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
     {
-        await _userService.ChangePassword(changePasswordRequest);
+        await _userService.ChangePassword(request);
         return Ok();
     }
 }

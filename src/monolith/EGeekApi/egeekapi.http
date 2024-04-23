@@ -7,8 +7,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "email": "salmeidabatista@gmail.com",
-  "password": "Test@124"
+  "email": "admin@gmail.com",
+  "password": "Test@123"
 }
 
 > {%
@@ -22,28 +22,16 @@ Content-Type: application/json
 POST {{api_url}}/v1/users/
 Accept: application/json
 Content-Type: application/json
-
-{
-  "name": "test w",
-  "email": "test1@gmail.com",
-  "password": "test@123"
-}
-
-###
-
-POST {{api_url}}/v1/users/worker
-Accept: application/json
-Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "name": "test 123",
-  "email": "test1@worker.com",
-  "password": "test@123"
+  "name": "user test",
+  "email": "admin@gmail.com",
+  "password": "Test@123",
+  "role": "worker"
 }
 
 ###
-
 
 GET {{api_url}}/v1/users/me
 Accept: application/json
@@ -54,9 +42,108 @@ Authorization: Bearer {{auth_token}}
 PATCH {{api_url}}/v1/users/change-password
 Accept: application/json
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "email": "salmeidabatista@gmail.com",
   "currentPassword": "Test@123",
   "newPassword": "Test@124"
 }
+
+###
+
+POST {{api_url}}/v1/products
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Superman mini (2022 BLACK)",
+  "description": "A mini superman cone",
+  "price": "35.00",
+  "quantityInStock": 2,
+  "weightInGrams": 100,
+  "heightInCentimeters": 10,
+  "widthInCentimeters": 5
+}
+
+> {%
+    client.global.set("product_id", response.body);
+%}
+
+###
+
+GET {{api_url}}/v1/products
+Accept: application/json
+Content-Type: application/json
+
+###
+
+PATCH {{api_url}}/v1/products/2
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "quantityInStock": 4  
+}
+
+###
+
+POST {{api_url}}/v1/orders
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+[
+  {
+    "productId": 1,
+    "quantity": 1
+  },
+  {
+    "productId": 2,
+    "quantity": 1
+  }
+]
+
+> {%
+    console.log("order_id: " + response.body);
+    client.global.set("order_id", response.body);
+%}
+
+
+###
+
+GET {{api_url}}/v1/orders/{{order_id}}
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+###
+
+POST {{api_url}}/v1/orders/{{order_id}}/payment
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "address": "Rua do Ouro, 123",
+  "creditCardNumber": "9999999990123456",
+  "creditCardCode": "123"
+}
+
+###
+
+PUT {{api_url}}/v1/orders/{{order_id}}/shipping/sent
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+###
+
+PUT {{api_url}}/v1/orders/{{order_id}}/shipping/delivered
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+###

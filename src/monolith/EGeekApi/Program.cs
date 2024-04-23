@@ -1,8 +1,10 @@
 
+using System.Security.Claims;
 using System.Text;
 using EGeekApi.Middlewares;
 using EGeekApp.Service;
 using EGeekDomain;
+using EGeekInfra.Integration;
 using EGeekinfra.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -58,9 +60,10 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddControllers();
 
-
-
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<PaymentClient>();
 
 //TODO configure problem details
 
