@@ -1,0 +1,76 @@
+@api_url = http://localhost:5268
+
+POST {{api_url}}/v1/users
+Accept: application/json
+Content-Type: application/json
+
+//{
+//  "name": "Admin",
+//  "email": "admin@gmail.com",
+//  "password": "Test@123",
+//  "role": "worker"
+//}
+{
+  "name": "User 1",
+  "email": "user@gmail.com",
+  "password": "Test@123"
+}
+
+###
+
+POST {{api_url}}/v1/token
+Accept: application/json
+Content-Type: application/json
+
+//{
+//  "email": "admin@gmail.com",
+//  "password": "Test@123"
+//}
+{
+  "email": "user@gmail.com",
+  "password": "Test@123"
+}
+
+> {%
+    console.log("token: " + response.body.token);
+    client.global.set("auth_token", response.body.token);
+
+%}
+
+###
+
+GET {{api_url}}/v1/users/me
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+###
+
+POST {{api_url}}/v1/users/change-password
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "email": "admin@gmail.com",
+  "currentPassword": " Test@123",
+  "newPassword": "Test@123"
+}
+
+###
+
+POST {{api_url}}/v1/products
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "name": "Sample Product",
+  "description": "This is a sample product description.",
+  "price": 100,
+  "quantityInStock": 50,
+  "weightInGrams": 200,
+  "heightInCentimeters": 10,
+  "widthInCentimeters": 5
+}
+
